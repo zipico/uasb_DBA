@@ -1,0 +1,148 @@
+Creación de Tablas
+
+CREATE TABLE album
+(
+  albumid integer NOT NULL,
+  title character varying(160) NOT NULL,
+  artistid integer NOT NULL,
+  CONSTRAINT album_pkey PRIMARY KEY (albumid),
+  CONSTRAINT fk_artistid FOREIGN KEY (artistid)
+      REFERENCES artist (artistid) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE artist
+(
+  artistid integer NOT NULL,
+  name character varying(120),
+  CONSTRAINT artist_pkey PRIMARY KEY (artistid)
+);
+
+CREATE TABLE customer
+(
+  customerid integer NOT NULL,
+  firstname character varying(40) NOT NULL,
+  lastname character varying(20) NOT NULL,
+  company character varying(80),
+  address character varying(70),
+  city character varying(40),
+  state character varying(40),
+  country character varying(40),
+  postalcode character varying(10),
+  phone character varying(24),
+  fax character varying(24),
+  email character varying(60) NOT NULL,
+  supportrepid integer,
+  CONSTRAINT customer_pkey PRIMARY KEY (customerid)
+);
+
+CREATE TABLE employee
+(
+  employeeid integer NOT NULL,
+  lastname character varying(20) NOT NULL,
+  firstname character varying(20) NOT NULL,
+  title character varying(30),
+  reportsto integer,
+  birthdate timestamp without time zone,
+  hiredate timestamp without time zone,
+  address character varying(70),
+  city character varying(40),
+  state character varying(40),
+  country character varying(40),
+  postalcode character varying(10),
+  phone character varying(24),
+  fax character varying(24),
+  email character varying(60),
+  CONSTRAINT employee_pkey PRIMARY KEY (employeeid)
+);
+
+CREATE TABLE genre
+(
+  genreid integer NOT NULL,
+  name character varying(120),
+  CONSTRAINT genre_pkey PRIMARY KEY (genreid)
+):
+
+CREATE TABLE invoice
+(
+  invoiceid integer NOT NULL,
+  customerid integer NOT NULL,
+  invoicedate timestamp without time zone NOT NULL,
+  billingaddress character varying(70),
+  billingcity character varying(40),
+  billingstate character varying(40),
+  billingcountry character varying(40),
+  billingpostalcode character varying(10),
+  total numeric(10,2) NOT NULL,
+  CONSTRAINT invoice_pkey PRIMARY KEY (invoiceid),
+  CONSTRAINT fk_customerid FOREIGN KEY (customerid)
+      REFERENCES customer (customerid) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE invoiceline
+(
+  invoicelineid integer NOT NULL,
+  invoiceid integer NOT NULL,
+  trackid integer NOT NULL,
+  unitprice numeric(10,2) NOT NULL,
+  quantity integer NOT NULL,
+  CONSTRAINT invoiceline_pkey PRIMARY KEY (invoicelineid),
+  CONSTRAINT fk_invoiceid FOREIGN KEY (invoiceid)
+      REFERENCES invoice (invoiceid) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_trackid FOREIGN KEY (trackid)
+      REFERENCES track (trackid) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE playlist
+(
+  playlistid integer NOT NULL,
+  name character varying(120),
+  CONSTRAINT playlist_pkey PRIMARY KEY (playlistid)
+);
+
+CREATE TABLE mediatype
+(
+  mediatypeid integer NOT NULL,
+  name character varying(120),
+  CONSTRAINT mediatype_pkey PRIMARY KEY (mediatypeid)
+);
+
+CREATE TABLE playlisttrack
+(
+  playlistid integer NOT NULL,
+  trackid integer NOT NULL,
+  CONSTRAINT playlisttrack_pkey PRIMARY KEY (playlistid, trackid),
+  CONSTRAINT fk_playlistid FOREIGN KEY (playlistid)
+      REFERENCES playlist (playlistid) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE track
+(
+  trackid integer NOT NULL,
+  name character varying(200) NOT NULL,
+  albumid integer,
+  mediatypeid integer NOT NULL,
+  genreid integer,
+  composer character varying(220),
+  milliseconds integer NOT NULL,
+  bytes integer,
+  unitprice numeric(10,2) NOT NULL,
+  CONSTRAINT track_pkey PRIMARY KEY (trackid),
+  CONSTRAINT fk_albumid FOREIGN KEY (albumid)
+      REFERENCES album (albumid) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_genreid FOREIGN KEY (genreid)
+      REFERENCES genre (genreid) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_mediatypeid FOREIGN KEY (mediatypeid)
+      REFERENCES mediatype (mediatypeid) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+
+
+
